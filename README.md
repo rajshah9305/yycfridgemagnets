@@ -2,7 +2,11 @@
 
 An elite, Awwwards-worthy e-commerce website showcasing Calgary's finest vintage-style fridge magnet collection. Built with modern web technologies and featuring an immersive, interactive user experience.
 
-## 🌟 Features
+## 🌟 Live Demo
+
+🚀 **View the live website**: [https://rajshah9305.github.io/yycfridgemagnets](https://rajshah9305.github.io/yycfridgemagnets)
+
+## ✨ Features
 
 ### 🎨 **Design Excellence**
 - **Vintage Aesthetic**: Inspired by mid-20th century travel posters with modern sophistication
@@ -20,7 +24,7 @@ An elite, Awwwards-worthy e-commerce website showcasing Calgary's finest vintage
 - **AR Preview**: Placeholder for augmented reality fridge preview
 
 ### 🎯 **User Experience**
-- **Hero Showcase**: 3D rotating magnet display
+- **Hero Showcase**: 3D rotating magnet display with auto-rotation
 - **Smooth Scrolling**: Navigation with smooth scroll behavior
 - **Loading States**: Elegant loading animations and transitions
 - **Keyboard Navigation**: Full keyboard accessibility support
@@ -37,12 +41,14 @@ An elite, Awwwards-worthy e-commerce website showcasing Calgary's finest vintage
 ## 📁 Project Structure
 
 ```
-calgary-magnets/
-├── index.html          # Main HTML structure
-├── styles.css          # Comprehensive CSS styles
-├── script.js           # Interactive JavaScript functionality
-├── README.md           # Project documentation
-└── images/             # Product images (21 unique designs)
+yycfridgemagnets/
+├── index.html              # Main HTML structure
+├── styles.css              # Comprehensive CSS styles
+├── script.js               # Interactive JavaScript functionality
+├── README.md               # Project documentation
+├── package.json            # Project configuration
+├── .gitignore              # Git ignore file
+└── images/                 # Product images (21 unique designs)
     ├── calgary_magnet_01_main_cleaned.png
     ├── calgary_magnet_02_stampede_cleaned.png
     ├── calgary_magnet_03_olympic_cleaned.png
@@ -79,12 +85,6 @@ calgary-magnets/
 - **Cream (#f7fafc)**: Elegance, cleanliness, vintage paper
 - **Accent Colors**: Strategic use for highlights and interactions
 
-### **Typography Scale**
-- **Hero Title**: 3.5rem (56px) - Maximum impact
-- **Section Titles**: 2.5rem (40px) - Clear hierarchy
-- **Body Text**: 1rem (16px) - Optimal readability
-- **Small Text**: 0.85rem (14px) - Supporting information
-
 ## 🚀 Getting Started
 
 ### **Prerequisites**
@@ -92,10 +92,14 @@ calgary-magnets/
 - Local web server (optional, for development)
 
 ### **Installation**
-1. Clone or download the project files
-2. Ensure all image files are in the same directory as `index.html`
-3. Open `index.html` in your web browser
-4. For development, use a local server: `python -m http.server 8000`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rajshah9305/yycfridgemagnets.git
+   cd yycfridgemagnets
+   ```
+
+2. Open `index.html` in your web browser
+3. For development, use a local server: `python -m http.server 8000`
 
 ### **Usage**
 1. **Browse Collection**: Use the hero showcase or scroll to collection
@@ -221,6 +225,23 @@ For questions, suggestions, or support:
 © 2024 Calgary Magnets. All rights reserved.
 Made with ❤️ in Calgary, Alberta.
 
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 🌟 Acknowledgments
+
+- **Calgary Heritage**: For the inspiration and iconic landmarks
+- **Vintage Poster Artists**: For the aesthetic inspiration
+- **Modern Web Standards**: For the technical foundation
+- **Open Source Community**: For the tools and libraries
+
 ---
 
 **Built with passion for Calgary's heritage and modern web excellence.**
+
+🚀 **Ready for production deployment!**
