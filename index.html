@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calgary Magnets - Premium Vintage Collection | Calgary Souvenirs</title>
+    <meta name="description" content="Discover Calgary's finest vintage-style fridge magnet collection. Premium quality magnets featuring iconic Calgary landmarks, parks, and cultural sites.">
+    <meta name="keywords" content="Calgary magnets, fridge magnets, vintage posters, Calgary souvenirs, Alberta magnets, Calgary Tower, Stampede, Peace Bridge">
+    <meta name="author" content="Calgary Magnets Premium Collection">
+    <meta property="og:title" content="Calgary Magnets - Premium Vintage Collection">
+    <meta property="og:description" content="Discover Calgary's finest vintage-style fridge magnet collection featuring iconic landmarks and cultural treasures.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calgarymagnets.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Calgary Magnets - Premium Vintage Collection">
+    <meta name="twitter:description" content="Discover Calgary's finest vintage-style fridge magnet collection.">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧲</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>Calgary Magnets</h1>
+                <span class="nav-subtitle">Premium Collection</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#collection" class="nav-link">Collection</a></li>
+                <li><a href="#themes" class="nav-link">Themes</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <input type="text" placeholder="Search magnets by landmark, theme, or keyword..." id="searchInput">
+            <button class="search-close" id="searchClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="hero-particles" id="particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="hero-main">Calgary</span>
+                    <span class="hero-sub">Premium Magnets</span>
+                </h1>
+                <p class="hero-description">
+                    Discover our exclusive collection of vintage-style fridge magnets featuring Calgary's most iconic landmarks, parks, and cultural treasures. Each piece is crafted with premium materials and artistic excellence.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-primary" id="exploreBtn">
+                        Explore Collection
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-secondary" id="arPreviewBtn">
+                        <i class="fas fa-cube"></i>
+                        AR Preview
+                    </button>
+                </div>
+            </div>
+            <div class="hero-showcase">
+                <div class="magnet-showcase" id="magnetShowcase">
+                    <!-- Dynamic magnet showcase will be populated by JavaScript -->
+                </div>
+                <div class="showcase-controls">
+                    <button class="showcase-prev" id="showcasePrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="showcase-next" id="showcaseNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <div class="scroll-indicator">
+                <span>Scroll to explore</span>
+                <div class="scroll-line"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collection Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">Unique Designs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Themes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Premium Quality</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Calgary Pride</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collection Section -->
+    <section class="collection" id="collection">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Collection</h2>
+                <p class="section-subtitle">Handpicked magnets celebrating Calgary's rich heritage and iconic landmarks</p>
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="landmarks">Landmarks</button>
+                    <button class="filter-btn" data-filter="parks">Parks & Nature</button>
+                    <button class="filter-btn" data-filter="culture">Culture & Events</button>
+                    <button class="filter-btn" data-filter="sports">Sports & Entertainment</button>
+                </div>
+                <div class="sort-controls">
+                    <select id="sortSelect" class="sort-select">
+                        <option value="featured">Featured</option>
+                        <option value="alphabetical">A-Z</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid" id="productGrid">
+                <!-- Products will be dynamically populated -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="btn-outline" id="loadMoreBtn">Load More Magnets</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Themes Section -->
+    <section class="themes" id="themes">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Explore by Theme</h2>
+                <p class="section-subtitle">Discover magnets organized by Calgary's most beloved themes</p>
+            </div>
+            <div class="themes-grid">
+                <div class="theme-card" data-theme="landmarks">
+                    <div class="theme-image">
+                        <img src="calgary_magnet_04_tower_cleaned.png" alt="Calgary Tower">
+                    </div>
+                    <div class="theme-content">
+                        <h3>Iconic Landmarks</h3>
+                        <p>Calgary Tower, Peace Bridge, and architectural marvels</p>
+                        <span class="theme-count">5 magnets</span>
+                    </div>
+                </div>
+                <div class="theme-card" data-theme="parks">
+                    <div class="theme-image">
+                        <img src="princes_island_park_cleaned.png" alt="Parks">
+                    </div>
+                    <div class="theme-content">
+                        <h3>Parks & Nature</h3>
+                        <p>Fish Creek Park, Prince's Island, and natural beauty</p>
+                        <span class="theme-count">4 magnets</span>
+                    </div>
+                </div>
+                <div class="theme-card" data-theme="culture">
+                    <div class="theme-image">
+                        <img src="glenbow_museum_cleaned.png" alt="Culture">
+                    </div>
+                    <div class="theme-content">
+                        <h3>Culture & Heritage</h3>
+                        <p>Museums, heritage sites, and cultural treasures</p>
+                        <span class="theme-count">6 magnets</span>
+                    </div>
+                </div>
+                <div class="theme-card" data-theme="sports">
+                    <div class="theme-image">
+                        <img src="calgary_magnet_07_saddledome_cleaned.png" alt="Sports">
+                    </div>
+                    <div class="theme-content">
+                        <h3>Sports & Entertainment</h3>
+                        <p>Stampede, Saddledome, and entertainment venues</p>
+                        <span class="theme-count">6 magnets</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-body">
+                <div class="product-detail-image">
+                    <img id="modalImage" src="" alt="">
+                    <div class="image-zoom-controls">
+                        <button class="zoom-btn" id="zoomIn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="zoom-btn" id="zoomOut">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="zoom-btn" id="zoomReset">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="product-detail-info">
+                    <h2 id="modalTitle"></h2>
+                    <div class="product-meta">
+                        <span class="product-theme" id="modalTheme"></span>
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">(4.9/5 from 127 reviews)</span>
+                        </div>
+                    </div>
+                    <p id="modalDescription"></p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Size:</span>
+                            <span class="spec-value">3" x 2.5"</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Material:</span>
+                            <span class="spec-value">Premium Vinyl with Strong Magnet</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Finish:</span>
+                            <span class="spec-value">High-Gloss UV Protection</span>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <div class="quantity-controls">
+                            <button class="qty-btn" id="qtyDecrease">-</button>
+                            <input type="number" id="qtyInput" value="1" min="1" max="10">
+                            <button class="qty-btn" id="qtyIncrease">+</button>
+                        </div>
+                        <button class="btn-primary add-to-cart-btn" id="addToCartBtn">
+                            <i class="fas fa-shopping-bag"></i>
+                            Add to Cart - $12.99
+                        </button>
+                    </div>
+                    <div class="product-features">
+                        <div class="feature-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Free shipping on orders over $50</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>30-day satisfaction guarantee</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-gift"></i>
+                            <span>Perfect for gifts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="cart-close" id="cartClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically populated -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cartTotal">0.00</span></span>
+            </div>
+            <button class="btn-primary checkout-btn" id="checkoutBtn">
+                Proceed to Checkout
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About Our Collection</h2>
+                    <p>We're passionate about celebrating Calgary's unique character through beautifully designed fridge magnets. Each piece in our collection is carefully curated to showcase the city's most beloved landmarks, natural beauty, and cultural heritage.</p>
+                    <p>Our vintage-style designs capture the essence of Calgary's spirit, from the iconic Calgary Tower to the serene beauty of Fish Creek Park. Every magnet is crafted with premium materials and attention to detail.</p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-palette"></i>
+                            <h4>Artistic Excellence</h4>
+                            <p>Each design is created with artistic precision and vintage appeal</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-mountain"></i>
+                            <h4>Local Pride</h4>
+                            <p>Celebrating Calgary's landmarks and natural beauty</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-heart"></i>
+                            <h4>Made with Love</h4>
+                            <p>Crafted by local artists who call Calgary home</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="calgary_magnet_01_main_cleaned.png" alt="About Calgary Magnets">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-subtitle">Have questions about our collection? We'd love to hear from you!</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Calgary, Alberta, Canada</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>hello@calgarymagnets.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+1 (403) 555-CALGARY</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Send Message
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Calgary Magnets</h3>
+                    <p>Celebrating Calgary's heritage through premium vintage-style fridge magnets.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#collection">Collection</a></li>
+                        <li><a href="#themes">Themes</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Subscribe for new designs and exclusive offers!</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email address">
+                        <button type="submit">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Calgary Magnets. All rights reserved. Made with ❤️ in Calgary.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

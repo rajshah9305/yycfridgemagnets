@@ -1,0 +1,44 @@
+{
+  "name": "calgary-magnets-premium",
+  "version": "1.0.0",
+  "description": "Elite e-commerce website for Calgary vintage-style fridge magnet collection",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build process needed - vanilla HTML/CSS/JS'",
+    "lint": "echo 'Add linting tools as needed'",
+    "test": "echo 'Add testing framework as needed'"
+  },
+  "keywords": [
+    "calgary",
+    "magnets",
+    "ecommerce",
+    "vintage",
+    "travel-posters",
+    "alberta",
+    "canada",
+    "premium-collection",
+    "fridge-magnets"
+  ],
+  "author": "Calgary Magnets Premium Collection",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calgary-magnets/premium-collection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/calgary-magnets/premium-collection/issues"
+  },
+  "homepage": "https://calgarymagnets.com",
+  "devDependencies": {},
+  "dependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
