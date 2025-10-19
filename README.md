@@ -7,7 +7,7 @@
 
 **🏢 Business Contact:** Raj Shah  
 **📧 Email:** rajshah9305@gmail.com  
-**🌐 Live Store:** [https://rajshah9305.github.io/yycfridgemagnets](https://rajshah9305.github.io/yycfridgemagnets)  
+**🌐 Live Store:** **https://yycfridgemagnets.vercel.app**  
 **📍 Location:** Calgary, Alberta, Canada
 
 ---
