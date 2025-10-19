@@ -4,7 +4,7 @@ An elite, Awwwards-worthy e-commerce website showcasing Calgary's finest vintage
 
 ## 🌟 Live Demo
 
-🚀 **View the live website**: [https://rajshah9305.github.io/yycfridgemagnets](https://rajshah9305.github.io/yycfridgemagnets)
+🚀 **View the live website**:  https://yycfridgemagnets.vercel.app
 
 ## ✨ Features
 
