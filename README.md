@@ -99,85 +99,13 @@ Transform your refrigerator into a celebration of Calgary's heritage with our ex
 
 ---
 
-## 🎯 **TARGET MARKETS**
-
-### **Primary Markets**
-- **Tourists & Visitors**: Perfect Calgary souvenirs
-- **Local Residents**: Pride in hometown landmarks
-- **Calgary Alumni**: University and school connections
-- **Heritage Enthusiasts**: History and culture lovers
-- **Gift Shoppers**: Unique, meaningful presents
-
-### **Secondary Markets**
-- **Retail Gift Shops**: Tourist attractions and malls
-- **Corporate Clients**: Employee gifts and promotions
-- **Event Planners**: Conference and convention favors
-- **Online Retailers**: E-commerce partnerships
-- **International Markets**: Calgary diaspora worldwide
-
----
-
-## 🚀 **BUSINESS ADVANTAGES**
-
-### **Competitive Edge**
-- **Unique Vintage Design**: Stands out from generic souvenirs
-- **Local Authenticity**: Genuine Calgary landmarks and heritage
-- **Premium Quality**: Superior materials and printing
-- **Professional Presentation**: Modern e-commerce platform
-- **Scalable Business Model**: Ready for growth and expansion
-
-### **Market Opportunities**
-- **Tourism Growth**: Calgary's expanding visitor market
-- **Heritage Tourism**: Growing interest in local culture
-- **E-commerce Boom**: Online shopping trends
-- **Gift Market**: Year-round gift-giving occasions
-- **Corporate Gifting**: Business relationship building
-
----
-
-## 📈 **SALES STRATEGY**
-
-### **Direct Sales Channels**
-- **Online Store**: Professional e-commerce website
-- **Social Media**: Instagram, Facebook marketing
-- **Local Events**: Farmers markets, craft fairs
-- **Tourist Locations**: Partnership opportunities
-- **Corporate Sales**: B2B relationship building
-
-### **Retail Partnerships**
-- **Gift Shops**: Tourist attractions and hotels
-- **Bookstores**: Local interest sections
-- **Museums**: Heritage and cultural venues
-- **Universities**: Alumni and student markets
-- **Specialty Retailers**: Calgary-themed stores
-
----
-
-## 🎨 **BRAND IDENTITY**
-
-### **Visual Elements**
-- **Logo**: Professional Calgary-themed branding
-- **Color Scheme**: Heritage blues, gold, and cream
-- **Typography**: Classic, readable fonts
-- **Photography**: High-quality landmark images
-- **Packaging**: Eco-friendly, branded materials
-
-### **Brand Values**
-- **Authenticity**: Genuine Calgary heritage
-- **Quality**: Premium materials and design
-- **Heritage**: Respect for local history
-- **Innovation**: Modern presentation of classic themes
-- **Community**: Supporting local Calgary pride
-
----
-
 ## 📞 **CONTACT & ORDERING**
 
 ### **Sales Contact**
 **Raj Shah**  
 📧 **Email:** rajshah9305@gmail.com  
-📱 **Phone:** [Your Phone Number]  
-🌐 **Website:** [https://rajshah9305.github.io/yycfridgemagnets](https://rajshah9305.github.io/yycfridgemagnets)  
+📱 **Phone:** 587-969-6180
+🌐 **Website:**https://yycfridgemagnets.vercel.app
 📍 **Location:** Calgary, Alberta, Canada
 
 ### **Ordering Process**
@@ -218,19 +146,11 @@ Transform your refrigerator into a celebration of Calgary's heritage with our ex
 - **Design Awards**: Professional design recognition
 - **Customer Satisfaction**: 98% positive feedback
 
-### **Market Potential**
-- **Calgary Population**: 1.3+ million residents
-- **Annual Tourists**: 7+ million visitors
-- **Target Market**: 500,000+ potential customers
-- **Growth Opportunity**: Expanding tourism market
-- **Revenue Potential**: Scalable business model
-
 ---
 
 ## 🎁 **SPECIAL OFFERS**
 
 ### **Launch Promotions**
-- **First Order Discount**: 15% off for new customers
 - **Bundle Savings**: Up to 20% off multi-pack purchases
 - **Wholesale Incentives**: Volume pricing for retailers
 - **Corporate Packages**: Custom solutions for businesses
@@ -240,15 +160,9 @@ Transform your refrigerator into a celebration of Calgary's heritage with our ex
 
 ## 📄 **LICENSING & LEGAL**
 
-**© 2024 Calgary Magnets by Raj Shah. All rights reserved.**  
-*Built and designed by RAJ with ❤️ in Calgary, Alberta, Canada*
+**© 2025 Calgary Magnets by Raj Shah. All rights reserved.**  
 
-### **Business Information**
-- **Business Registration**: [Your Business Number]
-- **Tax ID**: [Your Tax ID]
-- **Insurance**: Product liability coverage
-- **Quality Assurance**: Professional manufacturing standards
-- **Environmental**: Eco-friendly packaging materials
+*Built and designed by RAJ with ❤️ in Calgary, Alberta, Canada*
 
 ---
 
@@ -261,7 +175,7 @@ Transform your refrigerator into a celebration of Calgary's heritage with our ex
 - Corporate gifting solutions
 - Bulk order requirements
 
-**Let's bring Calgary's heritage to your customers!**
+**Let's bring Calgary's heritage to the customers!**
 
 ---
 
