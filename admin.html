@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calgary Magnets - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Admin-specific styles */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .admin-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tab {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .admin-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .btn-admin {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-edit {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-add {
+            background: var(--green-color);
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">Calgary Magnets Admin Dashboard</h1>
+                <p>Manage your magnet collection and track business performance</p>
+            </div>
+            <div>
+                <a href="index.html" class="btn-admin" style="background: var(--primary-color); color: white; text-decoration: none;">
+                    <i class="fas fa-home"></i> Back to Store
+                </a>
+            </div>
+        </div>
+        
+        <div class="admin-nav">
+            <button class="nav-tab active" onclick="showTab('dashboard')">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="nav-tab" onclick="showTab('products')">
+                <i class="fas fa-magnet"></i> Products
+            </button>
+            <button class="nav-tab" onclick="showTab('orders')">
+                <i class="fas fa-shopping-cart"></i> Orders
+            </button>
+            <button class="nav-tab" onclick="showTab('analytics')">
+                <i class="fas fa-analytics"></i> Analytics
+            </button>
+            <button class="nav-tab" onclick="showTab('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+        
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="admin-content">
+            <h2>Business Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalProducts">21</div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRevenue">$0</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgOrderValue">$0</div>
+                    <div class="stat-label">Avg Order Value</div>
+                </div>
+            </div>
+            
+            <h3>Recent Activity</h3>
+            <div id="recentActivity">
+                <p>No recent activity to display.</p>
+            </div>
+        </div>
+        
+        <!-- Products Tab -->
+        <div id="products" class="admin-content hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Product Management</h2>
+                <button class="btn-add" onclick="showAddProductForm()">
+                    <i class="fas fa-plus"></i> Add New Product
+                </button>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Theme</th>
+                        <th>Price</th>
+                        <th>Featured</th>
+                        <th>Popular</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable">
+                    <!-- Products will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Orders Tab -->
+        <div id="orders" class="admin-content hidden">
+            <h2>Order Management</h2>
+            <div id="ordersList">
+                <p>No orders to display.</p>
+            </div>
+        </div>
+        
+        <!-- Analytics Tab -->
+        <div id="analytics" class="admin-content hidden">
+            <h2>Analytics & Insights</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="pageViews">0</div>
+                    <div class="stat-label">Page Views</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="uniqueVisitors">0</div>
+                    <div class="stat-label">Unique Visitors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="cartAdds">0</div>
+                    <div class="stat-label">Cart Additions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="searchQueries">0</div>
+                    <div class="stat-label">Search Queries</div>
+                </div>
+            </div>
+            
+            <h3>Top Performing Products</h3>
+            <div id="topProducts">
+                <p>Analytics data will appear here once users start interacting with the site.</p>
+            </div>
+        </div>
+        
+        <!-- Settings Tab -->
+        <div id="settings" class="admin-content hidden">
+            <h2>Store Settings</h2>
+            
+            <div class="form-group">
+                <label for="storeName">Store Name</label>
+                <input type="text" id="storeName" value="Calgary Magnets Premium Collection">
+            </div>
+            
+            <div class="form-group">
+                <label for="storeDescription">Store Description</label>
+                <textarea id="storeDescription" rows="3">Premium vintage-style fridge magnets featuring Calgary's iconic landmarks and cultural treasures.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="defaultPrice">Default Price</label>
+                <input type="number" id="defaultPrice" value="12.99" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency">
+                    <option value="CAD">Canadian Dollar (CAD)</option>
+                    <option value="USD">US Dollar (USD)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                </select>
+            </div>
+            
+            <button class="btn-add" onclick="saveSettings()">
+                <i class="fas fa-save"></i> Save Settings
+            </button>
+        </div>
+    </div>
+    
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h3>Add New Product</h3>
+                <button onclick="closeAddProductForm()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+            </div>
+            
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImage">Image Filename</label>
+                    <input type="text" id="productImage" placeholder="magnet_image.png" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productTheme">Theme</label>
+                    <select id="productTheme" required>
+                        <option value="landmarks">Landmarks</option>
+                        <option value="parks">Parks & Nature</option>
+                        <option value="culture">Culture & Heritage</option>
+                        <option value="sports">Sports & Entertainment</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <input type="number" id="productPrice" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="productFeatured"> Featured Product
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="productPopular"> Popular Product
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-add">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Admin Dashboard JavaScript
+        let currentTab = 'dashboard';
+        
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            loadProductsTable();
+            loadAnalytics();
+        });
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.admin-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.remove('hidden');
+            event.target.classList.add('active');
+            currentTab = tabName;
+        }
+        
+        function loadDashboardData() {
+            // Load business metrics
+            const cartData = JSON.parse(localStorage.getItem('calgaryMagnetsCart') || '[]');
+            const analyticsData = JSON.parse(localStorage.getItem('analyticsData') || '[]');
+            
+            // Calculate metrics
+            const totalOrders = localStorage.getItem('totalOrders') || 0;
+            const totalRevenue = localStorage.getItem('totalRevenue') || 0;
+            const avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : 0;
+            
+            // Update dashboard
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue}`;
+            document.getElementById('avgOrderValue').textContent = `$${avgOrderValue}`;
+            
+            // Show recent activity
+            const recentActivity = analyticsData.slice(-5).reverse();
+            const activityHtml = recentActivity.length > 0 
+                ? recentActivity.map(activity => `
+                    <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                        <strong>${activity.name}</strong> - ${new Date(activity.timestamp).toLocaleString()}
+                    </div>
+                `).join('')
+                : '<p>No recent activity to display.</p>';
+            
+            document.getElementById('recentActivity').innerHTML = activityHtml;
+        }
+        
+        function loadProductsTable() {
+            // Load products from main script (would normally come from database)
+            const products = [
+                { id: 1, name: "Calgary Tower", image: "calgary_magnet_04_tower_cleaned.png", theme: "landmarks", price: 12.99, featured: true, popular: true },
+                { id: 2, name: "Calgary Stampede", image: "calgary_magnet_02_stampede_cleaned.png", theme: "sports", price: 12.99, featured: true, popular: true },
+                { id: 3, name: "Canada Olympic Park", image: "calgary_magnet_03_olympic_cleaned.png", theme: "sports", price: 12.99, featured: false, popular: true },
+                { id: 4, name: "Calgary Zoo", image: "calgary_magnet_05_zoo_cleaned.png", theme: "culture", price: 12.99, featured: true, popular: false },
+                { id: 5, name: "Heritage Park", image: "calgary_magnet_06_heritage_fixed_cleaned.png", theme: "culture", price: 12.99, featured: false, popular: false }
+            ];
+            
+            const tableBody = document.getElementById('productsTable');
+            tableBody.innerHTML = products.map(product => `
+                <tr>
+                    <td><img src="${product.image}" alt="${product.name}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 5px;"></td>
+                    <td>${product.name}</td>
+                    <td>${product.theme}</td>
+                    <td>$${product.price}</td>
+                    <td>${product.featured ? '✅' : '❌'}</td>
+                    <td>${product.popular ? '✅' : '❌'}</td>
+                    <td>
+                        <button class="btn-admin btn-edit" onclick="editProduct(${product.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-admin btn-delete" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function loadAnalytics() {
+            const analyticsData = JSON.parse(localStorage.getItem('analyticsData') || '[]');
+            const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            
+            // Calculate analytics metrics
+            const pageViews = analyticsData.filter(event => event.type === 'page_view').length;
+            const uniqueVisitors = new Set(analyticsData.map(event => event.user_agent)).size;
+            const cartAdds = analyticsData.filter(event => event.name === 'add_to_cart').length;
+            const searchQueries = searchHistory.length;
+            
+            // Update analytics display
+            document.getElementById('pageViews').textContent = pageViews;
+            document.getElementById('uniqueVisitors').textContent = uniqueVisitors;
+            document.getElementById('cartAdds').textContent = cartAdds;
+            document.getElementById('searchQueries').textContent = searchQueries;
+            
+            // Show top products (mock data)
+            document.getElementById('topProducts').innerHTML = `
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                        <span>Calgary Tower</span>
+                        <span>🔥 15 views</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                        <span>Calgary Stampede</span>
+                        <span>🔥 12 views</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                        <span>Peace Bridge</span>
+                        <span>🔥 10 views</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showAddProductForm() {
+            document.getElementById('addProductModal').classList.remove('hidden');
+        }
+        
+        function closeAddProductForm() {
+            document.getElementById('addProductModal').classList.add('hidden');
+            document.getElementById('addProductForm').reset();
+        }
+        
+        function editProduct(productId) {
+            alert(`Edit product ${productId} - This would open an edit form`);
+        }
+        
+        function deleteProduct(productId) {
+            if (confirm(`Are you sure you want to delete product ${productId}?`)) {
+                alert(`Product ${productId} deleted`);
+                loadProductsTable();
+            }
+        }
+        
+        function saveSettings() {
+            const settings = {
+                storeName: document.getElementById('storeName').value,
+                storeDescription: document.getElementById('storeDescription').value,
+                defaultPrice: document.getElementById('defaultPrice').value,
+                currency: document.getElementById('currency').value
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            alert('Settings saved successfully!');
+        }
+        
+        // Handle add product form submission
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newProduct = {
+                id: Date.now(),
+                name: document.getElementById('productName').value,
+                image: document.getElementById('productImage').value,
+                theme: document.getElementById('productTheme').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                description: document.getElementById('productDescription').value,
+                featured: document.getElementById('productFeatured').checked,
+                popular: document.getElementById('productPopular').checked
+            };
+            
+            // In a real app, this would save to a database
+            alert(`Product "${newProduct.name}" added successfully!`);
+            closeAddProductForm();
+            loadProductsTable();
+        });
+        
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            if (settings.storeName) document.getElementById('storeName').value = settings.storeName;
+            if (settings.storeDescription) document.getElementById('storeDescription').value = settings.storeDescription;
+            if (settings.defaultPrice) document.getElementById('defaultPrice').value = settings.defaultPrice;
+            if (settings.currency) document.getElementById('currency').value = settings.currency;
+        });
+    </script>
+</body>
+</html>

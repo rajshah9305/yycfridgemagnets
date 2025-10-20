@@ -15,11 +15,39 @@
     <meta name="twitter:title" content="Calgary Magnets - Premium Vintage Collection">
     <meta name="twitter:description" content="Discover Calgary's finest vintage-style fridge magnet collection.">
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧲</text></svg>">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a365d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Calgary Magnets">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a365d'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🧲</text></svg>">
+    
+    <!-- Performance and SEO -->
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://rajshah9305.github.io/yycfridgemagnets">
+    
+    <!-- Analytics Placeholder -->
+    <script>
+        // Google Analytics 4 placeholder
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID', {
+            page_title: 'Calgary Magnets - Premium Collection',
+            page_location: window.location.href,
+            custom_map: {
+                'custom_parameter_1': 'magnet_collection'
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -44,6 +72,9 @@
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count" id="cartCount">0</span>
                 </button>
+                <a href="admin.html" class="admin-btn" title="Admin Dashboard" style="background: none; border: none; font-size: 1.2rem; color: var(--dark-blue); cursor: pointer; padding: var(--spacing-xs); border-radius: 50%; transition: var(--transition-fast); text-decoration: none;">
+                    <i class="fas fa-cog"></i>
+                </a>
                 <button class="menu-toggle" id="menuToggle">
                     <span></span>
                     <span></span>
@@ -94,10 +125,10 @@
                     <!-- Dynamic magnet showcase will be populated by JavaScript -->
                 </div>
                 <div class="showcase-controls">
-                    <button class="showcase-prev" id="showcasePrev">
+                    <button class="showcase-prev" id="prevBtn">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="showcase-next" id="showcaseNext">
+                    <button class="showcase-next" id="nextBtn">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -306,6 +337,14 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal for Item Details (3D Carousel) -->
+    <div id="modal" class="modal-overlay">
+        <div id="modalContent" class="modal-content">
+            <!-- Modal content will be injected by JavaScript -->
+        </div>
+        <button id="closeModalBtn" class="modal-close">&times;</button>
     </div>
 
     <!-- Cart Sidebar -->

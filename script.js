@@ -235,8 +235,8 @@ const elements = {
     exploreBtn: document.getElementById('exploreBtn'),
     arPreviewBtn: document.getElementById('arPreviewBtn'),
     magnetShowcase: document.getElementById('magnetShowcase'),
-    showcasePrev: document.getElementById('showcasePrev'),
-    showcaseNext: document.getElementById('showcaseNext'),
+    prevBtn: document.getElementById('prevBtn'),
+    nextBtn: document.getElementById('nextBtn'),
 
     // Collection
     productGrid: document.getElementById('productGrid'),
@@ -260,6 +260,11 @@ const elements = {
     zoomOut: document.getElementById('zoomOut'),
     zoomReset: document.getElementById('zoomReset'),
 
+    // 3D Carousel Modal
+    carouselModal: document.getElementById('modal'),
+    carouselModalContent: document.getElementById('modalContent'),
+    carouselModalClose: document.getElementById('closeModalBtn'),
+
     // Cart
     cartSidebar: document.getElementById('cartSidebar'),
     cartClose: document.getElementById('cartClose'),
@@ -276,6 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
     renderProducts();
     updateCartUI();
     setupAnimations();
+    initializePWA();
+    initializeAnalytics();
 });
 
 function initializeApp() {
@@ -338,8 +345,8 @@ function setupEventListeners() {
     // Hero Events
     elements.exploreBtn.addEventListener('click', scrollToCollection);
     elements.arPreviewBtn.addEventListener('click', showARPreview);
-    elements.showcasePrev.addEventListener('click', previousShowcase);
-    elements.showcaseNext.addEventListener('click', nextShowcase);
+    elements.prevBtn.addEventListener('click', previousShowcase);
+    elements.nextBtn.addEventListener('click', nextShowcase);
 
     // Collection Events
     elements.filterBtns.forEach(btn => {
@@ -363,6 +370,15 @@ function setupEventListeners() {
     // Cart Events
     elements.cartClose.addEventListener('click', closeCartSidebar);
     elements.checkoutBtn.addEventListener('click', proceedToCheckout);
+
+    // 3D Carousel Modal Events
+    elements.carouselModalClose.addEventListener('click', closeCarouselModal);
+    elements.carouselModal.addEventListener('click', (e) => {
+        if (e.target === elements.carouselModal) closeCarouselModal();
+    });
+
+    // Magnet click events
+    elements.magnetShowcase.addEventListener('click', handleMagnetClick);
 
     // Keyboard Events
     document.addEventListener('keydown', handleKeyboardEvents);
@@ -393,13 +409,61 @@ function handleSearch(e) {
         return;
     }
 
-    const results = productData.filter(product => 
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.theme.toLowerCase().includes(query)
-    );
+    // Enhanced search with fuzzy matching and scoring
+    const results = productData.map(product => {
+        let score = 0;
+        const name = product.name.toLowerCase();
+        const description = product.description.toLowerCase();
+        const theme = product.theme.toLowerCase();
+        
+        // Exact matches get highest score
+        if (name.includes(query)) score += 100;
+        if (description.includes(query)) score += 50;
+        if (theme.includes(query)) score += 25;
+        
+        // Fuzzy matching for partial matches
+        if (name.includes(query.substring(0, Math.min(query.length, 3)))) score += 30;
+        if (description.includes(query.substring(0, Math.min(query.length, 3)))) score += 15;
+        
+        // Keyword matching
+        const keywords = ['tower', 'bridge', 'park', 'museum', 'zoo', 'stampede', 'olympic', 'heritage'];
+        keywords.forEach(keyword => {
+            if (query.includes(keyword) && (name.includes(keyword) || description.includes(keyword))) {
+                score += 40;
+            }
+        });
+        
+        return { ...product, score };
+    }).filter(product => product.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8); // Limit to top 8 results
 
     renderSearchResults(results);
+    
+    // Add search analytics
+    if (results.length > 0) {
+        trackSearchEvent(query, results.length);
+    }
+}
+
+function trackSearchEvent(query, resultCount) {
+    // Track search analytics (in a real app, send to analytics service)
+    console.log(`Search: "${query}" returned ${resultCount} results`);
+    
+    // Store in localStorage for local analytics
+    const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    searchHistory.push({
+        query,
+        resultCount,
+        timestamp: Date.now()
+    });
+    
+    // Keep only last 50 searches
+    if (searchHistory.length > 50) {
+        searchHistory.splice(0, searchHistory.length - 50);
+    }
+    
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
 }
 
 function renderSearchResults(results) {
@@ -424,7 +488,7 @@ function toggleMobileMenu() {
     elements.menuToggle.classList.toggle('active');
 }
 
-// Hero Functions
+// Hero Functions - Enhanced 3D Carousel with Advanced Physics
 function createHeroShowcase() {
     const featuredProducts = productData.filter(p => p.featured);
     elements.magnetShowcase.innerHTML = '';
@@ -432,62 +496,280 @@ function createHeroShowcase() {
     featuredProducts.forEach((product, index) => {
         const magnetDiv = document.createElement('div');
         magnetDiv.className = 'showcase-magnet';
-        magnetDiv.dataset.productId = product.id;
+        magnetDiv.dataset.index = index;
         magnetDiv.innerHTML = `
             <img src="${product.image}" alt="${product.name}" loading="lazy">
             <div class="showcase-overlay">
                 <h4>${product.name}</h4>
                 <p>$${product.price}</p>
+                <div class="showcase-badges">
+                    ${product.popular ? '<span class="badge popular">🔥 Popular</span>' : ''}
+                    ${product.featured ? '<span class="badge featured">⭐ Featured</span>' : ''}
+                </div>
             </div>
+            <div class="magnet-glow"></div>
         `;
         elements.magnetShowcase.appendChild(magnetDiv);
     });
     
-    // Initialize rotation
-    updateShowcaseTransform();
+    // Initialize the 3D carousel with enhanced physics
+    updateShowcase();
+    setupAdvancedPhysics();
     
-    // Auto-rotate every 4 seconds
-    setInterval(() => {
-        nextShowcase();
-    }, 4000);
+    // Enhanced auto-rotation with user interaction detection
+    let autoRotateInterval;
+    let isUserInteracting = false;
+    
+    function startAutoRotation() {
+        autoRotateInterval = setInterval(() => {
+            if (!isUserInteracting) {
+                nextShowcase();
+            }
+        }, 4000);
+    }
+    
+    function stopAutoRotation() {
+        clearInterval(autoRotateInterval);
+    }
+    
+    // Pause auto-rotation on user interaction
+    elements.magnetShowcase.addEventListener('mouseenter', () => {
+        isUserInteracting = true;
+        stopAutoRotation();
+    });
+    
+    elements.magnetShowcase.addEventListener('mouseleave', () => {
+        isUserInteracting = false;
+        startAutoRotation();
+    });
+    
+    // Touch interaction for mobile
+    elements.magnetShowcase.addEventListener('touchstart', () => {
+        isUserInteracting = true;
+        stopAutoRotation();
+    });
+    
+    elements.magnetShowcase.addEventListener('touchend', () => {
+        setTimeout(() => {
+            isUserInteracting = false;
+            startAutoRotation();
+        }, 3000);
+    });
+    
+    startAutoRotation();
 }
 
 function nextShowcase() {
-    const magnets = elements.magnetShowcase.querySelectorAll('.showcase-magnet');
-    if (magnets.length === 0) return;
-    
-    currentShowcaseIndex = (currentShowcaseIndex + 1) % magnets.length;
-    updateShowcaseTransform();
+    const totalMagnets = elements.magnetShowcase.querySelectorAll('.showcase-magnet').length;
+    currentShowcaseIndex = (currentShowcaseIndex + 1) % totalMagnets;
+    updateShowcase();
 }
 
 function previousShowcase() {
-    const magnets = elements.magnetShowcase.querySelectorAll('.showcase-magnet');
-    if (magnets.length === 0) return;
-    
-    currentShowcaseIndex = (currentShowcaseIndex - 1 + magnets.length) % magnets.length;
-    updateShowcaseTransform();
+    const totalMagnets = elements.magnetShowcase.querySelectorAll('.showcase-magnet').length;
+    currentShowcaseIndex = (currentShowcaseIndex - 1 + totalMagnets) % totalMagnets;
+    updateShowcase();
 }
 
-function updateShowcaseTransform() {
-    const magnets = elements.magnetShowcase.querySelectorAll('.showcase-magnet');
-    if (magnets.length === 0) return;
+function updateShowcase() {
+    const magnetElements = document.querySelectorAll('.showcase-magnet');
+    const totalMagnets = magnetElements.length;
+    const angleStep = 360 / totalMagnets;
+    const radius = window.innerWidth > 768 ? 320 : 240; // Increased radius for better spacing
+
+    magnetElements.forEach((magnet, index) => {
+        const relativeIndex = (index - currentShowcaseIndex + totalMagnets) % totalMagnets;
+        const angle = relativeIndex * angleStep;
+        const angleRad = (angle * Math.PI) / 180;
+        
+        // Enhanced 3D positioning with smooth curves
+        const x = Math.sin(angleRad) * radius;
+        const y = Math.sin(angleRad * 0.5) * 20; // Subtle vertical movement
+        const z = -Math.cos(angleRad) * (radius / 2.5);
+        
+        let scale, opacity, zIndex, rotationY, glowIntensity;
+        
+        if (relativeIndex === 0) { // Center item - completely viewable
+            scale = 1.4;
+            opacity = 1;
+            zIndex = 400;
+            rotationY = 0;
+            glowIntensity = 1;
+            magnet.classList.add('active');
+            magnet.classList.add('center-magnet');
+        } else if (relativeIndex === 1 || relativeIndex === totalMagnets - 1) { // Immediate neighbors
+            scale = 0.8;
+            opacity = 0.25;
+            zIndex = 200;
+            rotationY = relativeIndex === 1 ? -15 : 15;
+            glowIntensity = 0.3;
+            magnet.classList.remove('active', 'center-magnet');
+        } else if (relativeIndex === 2 || relativeIndex === totalMagnets - 2) { // Second neighbors
+            scale = 0.65;
+            opacity = 0.15;
+            zIndex = 150;
+            rotationY = relativeIndex === 2 ? -25 : 25;
+            glowIntensity = 0.15;
+            magnet.classList.remove('active', 'center-magnet');
+        } else if (relativeIndex === 3 || relativeIndex === totalMagnets - 3) { // Third neighbors
+            scale = 0.5;
+            opacity = 0.1;
+            zIndex = 100;
+            rotationY = relativeIndex === 3 ? -35 : 35;
+            glowIntensity = 0.08;
+            magnet.classList.remove('active', 'center-magnet');
+        } else { // Furthest items
+            scale = 0.35;
+            opacity = 0.05;
+            zIndex = 50;
+            rotationY = relativeIndex < totalMagnets / 2 ? -45 : 45;
+            glowIntensity = 0.03;
+            magnet.classList.remove('active', 'center-magnet');
+        }
+        
+        // Apply enhanced transforms with rotation and glow
+        magnet.style.transform = `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) rotateY(${rotationY}deg)`;
+        magnet.style.opacity = opacity;
+        magnet.style.zIndex = zIndex;
+        
+        // Enhanced glow effect
+        const glow = magnet.querySelector('.magnet-glow');
+        if (glow) {
+            glow.style.opacity = glowIntensity;
+            glow.style.boxShadow = `0 0 ${20 + glowIntensity * 40}px rgba(49, 130, 206, ${glowIntensity * 0.8})`;
+        }
+        
+        // Add subtle animation delay for smoother transitions
+        magnet.style.transitionDelay = `${Math.abs(relativeIndex) * 50}ms`;
+    });
+}
+
+// Advanced Physics Engine for Enhanced Interactions
+function setupAdvancedPhysics() {
+    const magnets = document.querySelectorAll('.showcase-magnet');
+    let isMouseOver = false;
     
     magnets.forEach((magnet, index) => {
-        const offset = (index - currentShowcaseIndex) * 60; // Increased angle for better visibility
-        const zOffset = (index - currentShowcaseIndex) * -80; // Increased depth
-        const scale = index === currentShowcaseIndex ? 1 : 0.8;
-        const opacity = index === currentShowcaseIndex ? 1 : 0.6;
+        // Enhanced hover effects
+        magnet.addEventListener('mouseenter', () => {
+            isMouseOver = true;
+            magnet.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            magnet.style.transform += ' translateY(-10px)';
+            magnet.style.filter = 'brightness(1.1) saturate(1.2)';
+            
+            // Enhanced glow on hover
+            const glow = magnet.querySelector('.magnet-glow');
+            if (glow) {
+                glow.style.opacity = '0.8';
+                glow.style.boxShadow = '0 0 60px rgba(49, 130, 206, 0.9)';
+            }
+        });
         
-        magnet.style.transform = `translateZ(${zOffset}px) rotateY(${offset}deg) scale(${scale})`;
-        magnet.style.opacity = opacity;
-        magnet.style.zIndex = magnets.length - Math.abs(index - currentShowcaseIndex);
+        magnet.addEventListener('mouseleave', () => {
+            isMouseOver = false;
+            magnet.style.filter = 'brightness(1) saturate(1)';
+            
+            // Reset glow
+            const glow = magnet.querySelector('.magnet-glow');
+            if (glow) {
+                glow.style.opacity = '';
+                glow.style.boxShadow = '';
+            }
+            
+            // Reset position after delay
+            setTimeout(() => {
+                if (!isMouseOver) {
+                    updateShowcase();
+                }
+            }, 100);
+        });
         
-        // Add click handler for each magnet
-        magnet.onclick = () => {
-            const productId = parseInt(magnet.dataset.productId);
-            openProductModal(productId);
-        };
+        // Enhanced click interactions
+        magnet.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Add click ripple effect
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple-effect';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(49, 130, 206, 0.6)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.pointerEvents = 'none';
+            
+            const rect = magnet.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            
+            magnet.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
     });
+}
+
+function showCarouselModal(index) {
+    const featuredProducts = productData.filter(p => p.featured);
+    const product = featuredProducts[index];
+    if (!product) return;
+    
+    elements.carouselModalContent.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover rounded-xl mb-6">
+        <h2 class="text-3xl font-bold text-gray-900">${product.name}</h2>
+        <p class="text-2xl font-bold text-yellow-500 my-3">$${product.price}</p>
+        <p class="text-gray-600">${product.description}</p>
+        <button class="mt-8 px-6 py-3 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800" onclick="addToCartFromCarousel(${product.id})">Add to Cart</button>
+    `;
+    elements.carouselModal.classList.add('visible');
+}
+
+function closeCarouselModal() {
+    elements.carouselModal.classList.remove('visible');
+}
+
+function handleMagnetClick(e) {
+    const target = e.target.closest('.showcase-magnet');
+    if (!target) return;
+    
+    const clickedIndex = parseInt(target.dataset.index);
+    
+    if (clickedIndex === currentShowcaseIndex) {
+        showCarouselModal(clickedIndex);
+    } else {
+        currentShowcaseIndex = clickedIndex;
+        updateShowcase();
+    }
+}
+
+function addToCartFromCarousel(productId) {
+    const quantity = 1;
+    const existingItem = cart.find(item => item.id === productId);
+    
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        const product = productData.find(p => p.id === productId);
+        if (product) {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                quantity: quantity
+            });
+        }
+    }
+    
+    updateCartStorage();
+    updateCartUI();
+    closeCarouselModal();
+    showCartAnimation();
+    showNotification(`Added ${productData.find(p => p.id === productId)?.name} to cart`, 'success');
 }
 
 function scrollToCollection() {
@@ -497,8 +779,301 @@ function scrollToCollection() {
 }
 
 function showARPreview() {
-    // Simulate AR preview functionality
-    alert('AR Preview feature coming soon! This will allow you to see how the magnets look on your fridge using your device camera.');
+    // Enhanced AR Preview functionality
+    const arModal = createARModal();
+    document.body.appendChild(arModal);
+    
+    // Check for camera access
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+            .then(stream => {
+                const video = arModal.querySelector('#arVideo');
+                video.srcObject = stream;
+                video.play();
+                
+                // Add magnet overlay
+                addMagnetOverlay(arModal);
+            })
+            .catch(error => {
+                console.error('Camera access denied:', error);
+                showCameraFallback(arModal);
+            });
+    } else {
+        showCameraFallback(arModal);
+    }
+}
+
+function createARModal() {
+    const modal = document.createElement('div');
+    modal.className = 'ar-modal';
+    modal.innerHTML = `
+        <div class="ar-overlay">
+            <div class="ar-content">
+                <div class="ar-header">
+                    <h3>AR Preview - Try Before You Buy</h3>
+                    <button class="ar-close" onclick="closeARModal(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="ar-camera-container">
+                    <video id="arVideo" autoplay playsinline muted></video>
+                    <div class="ar-magnet-overlay" id="magnetOverlay">
+                        <img src="" alt="Magnet Preview" id="overlayMagnet">
+                        <div class="ar-instructions">
+                            <p>📱 Point your camera at a flat surface</p>
+                            <p>🧲 The magnet will appear in AR</p>
+                            <p>📏 Tap to place and resize</p>
+                        </div>
+                    </div>
+                    <div class="ar-controls">
+                        <button class="ar-btn" onclick="changeMagnetSize('small')">Small</button>
+                        <button class="ar-btn" onclick="changeMagnetSize('medium')">Medium</button>
+                        <button class="ar-btn" onclick="changeMagnetSize('large')">Large</button>
+                        <button class="ar-btn" onclick="captureARImage()">📸 Capture</button>
+                    </div>
+                </div>
+                <div class="ar-info">
+                    <p><strong>How it works:</strong> Our AR technology lets you visualize how Calgary magnets will look on your fridge or any metal surface. Perfect for planning your collection!</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add AR modal styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .ar-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5000;
+            background: rgba(0, 0, 0, 0.95);
+        }
+        
+        .ar-overlay {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ar-content {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 400px;
+        }
+        
+        .ar-header {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ar-camera-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #000;
+        }
+        
+        #arVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .ar-magnet-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        #overlayMagnet {
+            width: 120px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0.9;
+        }
+        
+        .ar-instructions {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .ar-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 3;
+        }
+        
+        .ar-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .ar-btn:hover {
+            background: var(--dark-blue);
+        }
+        
+        .ar-info {
+            padding: 1rem;
+            background: var(--cream-color);
+            font-size: 0.9rem;
+            color: var(--dark-blue);
+        }
+        
+        .ar-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+        
+        .ar-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    `;
+    
+    document.head.appendChild(style);
+    return modal;
+}
+
+function addMagnetOverlay(modal) {
+    const overlayMagnet = modal.querySelector('#overlayMagnet');
+    const featuredProducts = productData.filter(p => p.featured);
+    const randomMagnet = featuredProducts[Math.floor(Math.random() * featuredProducts.length)];
+    
+    overlayMagnet.src = randomMagnet.image;
+    overlayMagnet.alt = randomMagnet.name;
+    
+    // Add tap to place functionality
+    const cameraContainer = modal.querySelector('.ar-camera-container');
+    cameraContainer.addEventListener('click', (e) => {
+        const rect = cameraContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const overlay = modal.querySelector('.ar-magnet-overlay');
+        overlay.style.left = x + 'px';
+        overlay.style.top = y + 'px';
+        overlay.style.transform = 'translate(-50%, -50%)';
+    });
+}
+
+function changeMagnetSize(size) {
+    const overlayMagnet = document.querySelector('#overlayMagnet');
+    if (!overlayMagnet) return;
+    
+    const sizes = {
+        small: '80px 100px',
+        medium: '120px 140px',
+        large: '160px 180px'
+    };
+    
+    overlayMagnet.style.width = sizes[size].split(' ')[0];
+    overlayMagnet.style.height = sizes[size].split(' ')[1];
+}
+
+function captureARImage() {
+    const video = document.querySelector('#arVideo');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    
+    // Add magnet overlay to canvas
+    const overlayMagnet = document.querySelector('#overlayMagnet');
+    if (overlayMagnet) {
+        ctx.drawImage(overlayMagnet, canvas.width / 2 - 60, canvas.height / 2 - 70, 120, 140);
+    }
+    
+    // Convert to image and download
+    canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'calgary-magnet-ar-preview.jpg';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+    
+    showNotification('AR preview saved to your device!', 'success');
+}
+
+function showCameraFallback(modal) {
+    const video = modal.querySelector('#arVideo');
+    video.style.display = 'none';
+    
+    const fallback = document.createElement('div');
+    fallback.className = 'ar-fallback';
+    fallback.innerHTML = `
+        <div class="fallback-content">
+            <i class="fas fa-camera fa-3x"></i>
+            <h4>Camera Access Required</h4>
+            <p>To use AR preview, please allow camera access when prompted.</p>
+            <button class="ar-btn" onclick="retryCameraAccess()">Try Again</button>
+            <button class="ar-btn" onclick="closeARModal(this.closest('.ar-modal'))">Close</button>
+        </div>
+    `;
+    
+    modal.querySelector('.ar-camera-container').appendChild(fallback);
+}
+
+function closeARModal(button) {
+    const modal = button.closest('.ar-modal');
+    const video = modal.querySelector('#arVideo');
+    
+    if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+    
+    modal.remove();
+}
+
+function retryCameraAccess() {
+    closeARModal(document.querySelector('.ar-close'));
+    setTimeout(() => showARPreview(), 500);
 }
 
 // Product Functions
@@ -1036,8 +1611,16 @@ function handleKeyboardEvents(e) {
     // Close modals with Escape key
     if (e.key === 'Escape') {
         closeModal();
+        closeCarouselModal();
         closeSearchOverlay();
         closeCartSidebar();
+    }
+    
+    // Carousel navigation with arrow keys
+    if (elements.carouselModal.classList.contains('visible')) {
+        if (e.key === 'ArrowLeft') previousShowcase();
+        if (e.key === 'ArrowRight') nextShowcase();
+        return;
     }
     
     // Search with Enter key
@@ -1089,6 +1672,9 @@ function handleResize() {
     if (window.innerWidth <= 768) {
         elements.navMenu.classList.remove('active');
     }
+    
+    // Update carousel layout on resize
+    updateShowcase();
 }
 
 // Theme filtering is now handled in setupThemeCards() function
@@ -1209,9 +1795,377 @@ function addLoadingState(button, text = 'Loading...') {
     };
 }
 
+// PWA Initialization
+function initializePWA() {
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered successfully:', registration);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New content is available, prompt user to refresh
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        });
+    }
+    
+    // Handle install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallPrompt();
+    });
+    
+    // Track app installed event
+    window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        trackEvent('pwa_installed');
+        hideInstallPrompt();
+    });
+}
+
+function showUpdateNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'update-notification';
+    notification.innerHTML = `
+        <div class="update-content">
+            <i class="fas fa-sync-alt"></i>
+            <span>New version available!</span>
+            <button onclick="updateApp()" class="update-btn">Update Now</button>
+            <button onclick="closeUpdateNotification()" class="close-update-btn">×</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .update-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            z-index: 6000;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .update-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .update-btn {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .close-update-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
+
+function updateApp() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration && registration.waiting) {
+                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+            }
+        });
+    }
+}
+
+function closeUpdateNotification() {
+    const notification = document.querySelector('.update-notification');
+    if (notification) {
+        notification.remove();
+    }
+}
+
+function showInstallPrompt() {
+    const installBanner = document.createElement('div');
+    installBanner.className = 'install-banner';
+    installBanner.innerHTML = `
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <div>
+                <strong>Install Calgary Magnets App</strong>
+                <p>Get quick access to your favorite magnets!</p>
+            </div>
+            <button onclick="installApp()" class="install-btn">Install</button>
+            <button onclick="hideInstallPrompt()" class="close-install-btn">×</button>
+        </div>
+    `;
+    
+    document.body.appendChild(installBanner);
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .install-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            z-index: 6000;
+            animation: slideInUp 0.3s ease;
+        }
+        
+        .install-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .install-content div {
+            flex: 1;
+        }
+        
+        .install-btn {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .close-install-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
+
+function installApp() {
+    if (window.deferredPrompt) {
+        window.deferredPrompt.prompt();
+        window.deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                trackEvent('pwa_install_accepted');
+            } else {
+                console.log('User dismissed the install prompt');
+                trackEvent('pwa_install_dismissed');
+            }
+            window.deferredPrompt = null;
+        });
+    }
+    hideInstallPrompt();
+}
+
+function hideInstallPrompt() {
+    const banner = document.querySelector('.install-banner');
+    if (banner) {
+        banner.remove();
+    }
+}
+
+// Analytics Initialization
+function initializeAnalytics() {
+    // Enhanced analytics tracking
+    trackPageView();
+    
+    // Track user interactions
+    trackUserEngagement();
+    
+    // Track performance metrics
+    trackPerformanceMetrics();
+}
+
+function trackPageView() {
+    const pageData = {
+        page_title: document.title,
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        referrer: document.referrer,
+        timestamp: Date.now()
+    };
+    
+    console.log('Page view tracked:', pageData);
+    
+    // Store in localStorage for offline analytics
+    const analyticsData = JSON.parse(localStorage.getItem('analyticsData') || '[]');
+    analyticsData.push({
+        type: 'page_view',
+        data: pageData,
+        timestamp: Date.now()
+    });
+    
+    // Keep only last 100 events
+    if (analyticsData.length > 100) {
+        analyticsData.splice(0, analyticsData.length - 100);
+    }
+    
+    localStorage.setItem('analyticsData', JSON.stringify(analyticsData));
+}
+
+function trackUserEngagement() {
+    let startTime = Date.now();
+    let isActive = true;
+    
+    // Track time on page
+    const trackTime = () => {
+        if (isActive) {
+            const timeSpent = Date.now() - startTime;
+            if (timeSpent > 30000) { // Track after 30 seconds
+                trackEvent('time_on_page', { duration: timeSpent });
+            }
+        }
+    };
+    
+    // Track scroll depth
+    let maxScrollDepth = 0;
+    window.addEventListener('scroll', () => {
+        const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+        if (scrollDepth > maxScrollDepth) {
+            maxScrollDepth = scrollDepth;
+            if (maxScrollDepth % 25 === 0) { // Track at 25%, 50%, 75%, 100%
+                trackEvent('scroll_depth', { depth: maxScrollDepth });
+            }
+        }
+    });
+    
+    // Track when user becomes inactive
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            isActive = false;
+            trackTime();
+        } else {
+            isActive = true;
+            startTime = Date.now();
+        }
+    });
+    
+    // Track on page unload
+    window.addEventListener('beforeunload', () => {
+        trackTime();
+    });
+}
+
+function trackPerformanceMetrics() {
+    // Track page load performance
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            const metrics = {
+                load_time: perfData.loadEventEnd - perfData.loadEventStart,
+                dom_content_loaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+                first_paint: performance.getEntriesByType('paint').find(entry => entry.name === 'first-paint')?.startTime || 0,
+                first_contentful_paint: performance.getEntriesByType('paint').find(entry => entry.name === 'first-contentful-paint')?.startTime || 0
+            };
+            
+            trackEvent('performance_metrics', metrics);
+        }, 1000);
+    });
+}
+
+function trackEvent(eventName, eventData = {}) {
+    const event = {
+        name: eventName,
+        data: eventData,
+        timestamp: Date.now(),
+        user_agent: navigator.userAgent,
+        screen_resolution: `${screen.width}x${screen.height}`,
+        viewport_size: `${window.innerWidth}x${window.innerHeight}`
+    };
+    
+    console.log('Event tracked:', event);
+    
+    // Store in localStorage
+    const analyticsData = JSON.parse(localStorage.getItem('analyticsData') || '[]');
+    analyticsData.push(event);
+    
+    // Keep only last 100 events
+    if (analyticsData.length > 100) {
+        analyticsData.splice(0, analyticsData.length - 100);
+    }
+    
+    localStorage.setItem('analyticsData', JSON.stringify(analyticsData));
+    
+    // Send to analytics service (in a real app)
+    // sendToAnalytics(event);
+}
+
 // Export functions for global access
 window.openProductModal = openProductModal;
 window.addToCartFromGrid = addToCartFromGrid;
 window.updateCartQuantity = updateCartQuantity;
 window.removeFromCart = removeFromCart;
 window.handleFilter = handleFilter;
+window.addToCartFromCarousel = addToCartFromCarousel;
+window.closeCarouselModal = closeCarouselModal;
+window.previousShowcase = previousShowcase;
+window.nextShowcase = nextShowcase;
+window.updateApp = updateApp;
+window.closeUpdateNotification = closeUpdateNotification;
+window.installApp = installApp;
+window.hideInstallPrompt = hideInstallPrompt;
+window.changeMagnetSize = changeMagnetSize;
+window.captureARImage = captureARImage;
+window.closeARModal = closeARModal;
+window.retryCameraAccess = retryCameraAccess;
